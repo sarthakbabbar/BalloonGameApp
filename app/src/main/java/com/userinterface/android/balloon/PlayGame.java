@@ -4,6 +4,7 @@ package com.userinterface.android.balloon;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -13,11 +14,21 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Date;
+import java.util.Random;
+
 public class PlayGame extends AppCompatActivity {
 
     private ViewGroup mContentView;
     private int[] BalloonColors = new int[3];
     private int NextColor, screenWidth,screenHeight;
+    private int levelNumber;
+
+    public static final int min_delay = 500;
+    public static final int max_delay = 1500;
+    public static final int min_duration = 1000;
+    public static final int max_duration = 8000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +68,9 @@ public class PlayGame extends AppCompatActivity {
         Toast toast1 = Toast.makeText(getApplicationContext(), gameLevel, 5);
         toast1.show();
 
-        mContentView .setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                    Balloon b = new Balloon(PlayGame.this, BalloonColors[NextColor],100);
-                    b.setX(motionEvent.getX());
-                    b.setY(screenHeight);
-                    mContentView.addView(b);
-                    b.releaseBalloon(screenHeight, 3000);
 
-                    if (NextColor+1 == BalloonColors.length){
-                        NextColor = 0;
 
-                    } else {
-                        NextColor ++;
-
-                    }
-
-                return false;
-            }
-        });
     }
 
     public void End(View view) {
@@ -108,6 +101,8 @@ public class PlayGame extends AppCompatActivity {
         Toast toast1 = Toast.makeText(getApplicationContext(), levelString, 5);
         toast1.show();
 
+        startgame();
+
 
     }
 
@@ -122,6 +117,78 @@ public class PlayGame extends AppCompatActivity {
         return false;
     }
 
+    private void startgame(){
+        levelNumber++;
+        BalloonLauncher launcher = new BalloonLauncher();
+        launcher.execute(levelNumber);
+    }
+
+    private class BalloonLauncher extends AsyncTask<Integer, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+
+            if (params.length != 1) {
+                throw new AssertionError(
+                        "Expected 1 param for current level");
+            }
+
+            int level = params[0];
+            int maxDelay = Math.max(min_delay,
+                    (max_delay - ((level - 1) * 500)));
+            int minDelay = maxDelay / 2;
+
+            int balloonsLaunched = 0;
+            while (balloonsLaunched < 3) {
+
+//              Get a random horizontal position for the next balloon
+                Random random = new Random(new Date().getTime());
+                int xPosition = random.nextInt(screenWidth - 200);
+                publishProgress(xPosition);
+                balloonsLaunched++;
+
+//              Wait a random number of milliseconds before looping
+                int delay = random.nextInt(minDelay) + minDelay;
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        return null;
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            int xPosition = values[0];
+            launchBalloon(xPosition);
+        }
+
+    }
+
+    private void launchBalloon(int x) {
+
+        Balloon balloon = new Balloon(this, BalloonColors[NextColor], 150);
+
+        if (NextColor + 1 == BalloonColors.length) {
+            NextColor = 0;
+        } else {
+            NextColor++;
+        }
+
+//      Set balloon vertical position and dimensions, add to container
+        balloon.setX(x);
+        balloon.setY(screenHeight + balloon.getHeight());
+        mContentView.addView(balloon);
+
+//      Let 'er fly
+        int duration = Math.max(min_duration, max_duration- (levelNumber * 1000));
+        balloon.releaseBalloon(screenHeight, duration);
+
+    }
 
 
 }
