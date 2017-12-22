@@ -17,7 +17,8 @@ import android.widget.Toast;
 import java.util.Date;
 import java.util.Random;
 
-public class PlayGame extends AppCompatActivity {
+public class PlayGame extends AppCompatActivity
+    implements Balloon.BalloonListner{
 
     private ViewGroup mContentView;
     private int[] BalloonColors = new int[3];
@@ -28,6 +29,7 @@ public class PlayGame extends AppCompatActivity {
     public static final int max_delay = 1500;
     public static final int min_duration = 1000;
     public static final int max_duration = 8000;
+    private int myScore;
 
 
     @Override
@@ -121,6 +123,19 @@ public class PlayGame extends AppCompatActivity {
         levelNumber++;
         BalloonLauncher launcher = new BalloonLauncher();
         launcher.execute(levelNumber);
+    }
+
+    @Override
+    public void popBalloonn(Balloon balloon, boolean userTouch) {
+        mContentView.removeView(balloon);
+        if (userTouch) {
+            myScore ++;
+            updateDisplay();
+        }
+    }
+
+    private void updateDisplay() {
+        // TODO : // Update the display
     }
 
     private class BalloonLauncher extends AsyncTask<Integer, Integer, Void> {

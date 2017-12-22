@@ -3,6 +3,7 @@ package com.userinterface.android.balloon;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -14,12 +15,15 @@ import android.widget.ImageView;
 public class Balloon extends ImageView implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
     private ValueAnimator balloonAnimator;
+    private BalloonListner touchListner;
+    private boolean popped;
     public Balloon(Context context) {
         super(context);
     }
 
     public Balloon(Context context, int color, int rawHeight) {
         super(context);
+        touchListner = (BalloonListner) context;
         this.setImageResource(R.drawable.balloon);
         this.setColorFilter(color);
 
@@ -55,7 +59,10 @@ public class Balloon extends ImageView implements ValueAnimator.AnimatorUpdateLi
 
     @Override
     public void onAnimationEnd(Animator animator) {
+        if(!popped){
+            touchListner.popBalloonn(this,false);
 
+        }
     }
 
     @Override
@@ -65,6 +72,20 @@ public class Balloon extends ImageView implements ValueAnimator.AnimatorUpdateLi
 
     @Override
     public void onAnimationRepeat(Animator animator) {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        if (!popped && event.getAction() == MotionEvent.ACTION_DOWN){
+            touchListner.popBalloonn(this,true);
+            popped = true;
+            balloonAnimator.cancel();
+        }
+        return super.onTouchEvent(event);
+    }
+    public interface BalloonListner{
+        void popBalloonn(Balloon balloon, boolean userTouch);
 
     }
 }
