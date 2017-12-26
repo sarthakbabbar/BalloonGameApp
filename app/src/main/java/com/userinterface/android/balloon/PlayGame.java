@@ -21,15 +21,16 @@ public class PlayGame extends AppCompatActivity
     implements Balloon.BalloonListner{
 
     private ViewGroup mContentView;
-    private int[] BalloonColors = new int[3];
+    private int[] BalloonColors = new int[5];
     private int NextColor, screenWidth,screenHeight;
-    private int levelNumber;
+    public  static int levelNumber ;
+    private int levelBalloonSpeed;
 
     public static final int min_delay = 500;
     public static final int max_delay = 1500;
     public static final int min_duration = 1000;
     public static final int max_duration = 8000;
-    private int myScore;
+
 
 
     @Override
@@ -38,9 +39,12 @@ public class PlayGame extends AppCompatActivity
         //setContentView(new MyCircle(this));
         setContentView(R.layout.activity_play_game);
 
+        //creating colors
         BalloonColors[0] = Color.argb(255,255,0,0);
         BalloonColors[1] = Color.argb(255,0,255,0);
         BalloonColors[2] = Color.argb(255,0,0,255);
+        BalloonColors[3] = Color.argb(255,130,125,0);
+        BalloonColors[4] = Color.argb(255,0,125,130);
 
         mContentView = (ViewGroup) findViewById(R.id.activity_play_game);
 
@@ -57,7 +61,7 @@ public class PlayGame extends AppCompatActivity
 
 
         }
-
+        //getting the intent from the button click from start page
         Intent intent = getIntent();
         String message = intent.getStringExtra("EXTRA_MESSAGE");
         Toast toast = Toast.makeText(getApplicationContext(), message, 5);
@@ -71,10 +75,22 @@ public class PlayGame extends AppCompatActivity
         toast1.show();
 
 
+        //adding rectangle
+        if (levelNumber <= 10 ) {
+            placeReactangle(1400, 0, 0);
+            placeReactangle(1400, 200, 0);
+            placeReactangle(1400, 400, 0);
+            placeReactangle(1400, 600, 0);
+            placeReactangle(1400, 800, 0);
+        }
+
+
+
+
 
 
     }
-
+    // on touch event for the button end
     public void End(View view) {
 
 
@@ -85,7 +101,7 @@ public class PlayGame extends AppCompatActivity
         startActivity(intent);
 
     }
-
+    //on touch event for the button next
     public void Next(View view) {
         //Reading level data
         SharedPreferences settings = getSharedPreferences("MyStorage", MODE_PRIVATE);
@@ -105,10 +121,42 @@ public class PlayGame extends AppCompatActivity
 
         startgame();
 
+        if (levelNumber <= 10 ){
+            placeReactangle(1400,0, 0);
+            placeReactangle(1400,200, 0);
+            placeReactangle(1400,400, 0);
+            placeReactangle(1400,600,0);
+            placeReactangle(1400,800,0);
+        } else if (levelNumber > 10 && levelNumber <= 20 ) {
+            placeReactangle(1400,0, 0);
+            placeReactangle(1400,200, 1);
+            placeReactangle(1400,400, 0);
+            placeReactangle(1400,600,1);
+            placeReactangle(1400,800,0);
+        } else if (levelNumber > 20 && levelNumber <= 30 ) {
+            placeReactangle(1400,0, 0);
+            placeReactangle(1400,200, 1);
+            placeReactangle(1400,400, 2);
+            placeReactangle(1400,600,0);
+            placeReactangle(1400,800,1);
+        } else if (levelNumber > 30 && levelNumber <= 40 ) {
+            placeReactangle(1400,0, 0);
+            placeReactangle(1400,200, 1);
+            placeReactangle(1400,400, 2);
+            placeReactangle(1400,600,3);
+            placeReactangle(1400,800,0);
+        }   else if (levelNumber > 40 && levelNumber <= 50 ) {
+            placeReactangle(1400,0, 0);
+            placeReactangle(1400,200, 1);
+            placeReactangle(1400,400, 2);
+            placeReactangle(1400,600,3);
+            placeReactangle(1400,800,4);
+        }
+
 
     }
-
-    public boolean onTouchEvent(MotionEvent event) {
+    // coordinates of x and y
+    /*public boolean onTouchEvent(MotionEvent event) {
         String x = Float.toString(event.getX());
         String y = Float.toString(event.getY());
         String coordinates = "Value of X : " + x + " ; Value of Y : " + y;
@@ -117,21 +165,97 @@ public class PlayGame extends AppCompatActivity
         Toast pos = Toast.makeText(getApplicationContext(), coordinates, 5);
         pos.show();
         return false;
-    }
-
+    }*/
+    // starting the animation
     private void startgame(){
+        levelBalloonSpeed++;
         levelNumber++;
         BalloonLauncher launcher = new BalloonLauncher();
         launcher.execute(levelNumber);
     }
-
+    //popping balloon on touch
     @Override
-    public void popBalloonn(Balloon balloon, boolean userTouch) {
-        mContentView.removeView(balloon);
-        if (userTouch) {
-            myScore ++;
-            updateDisplay();
-        }
+    public void popBalloonn(Balloon balloon, boolean userTouch, int currentColor) {
+      if (userTouch) {
+          if (levelNumber <= 10) {
+              if (currentColor == BalloonColors[0]) {
+                  mContentView.removeView(balloon);
+              }else {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+              }
+          } else if (levelNumber > 10 && levelNumber <= 20) {
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1]) {
+                  mContentView.removeView(balloon);
+              } else {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+              }
+          }else if (levelNumber > 20 && levelNumber <= 30) {
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2]) {
+                  mContentView.removeView(balloon);
+              } else {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+              }
+          }else if (levelNumber > 30 && levelNumber <= 40) {
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2] || currentColor == BalloonColors[3]) {
+                  mContentView.removeView(balloon);
+              } else {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+              }
+          }else if (levelNumber > 40 && levelNumber <= 50) {
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2] || currentColor == BalloonColors[3] || currentColor == BalloonColors[4]) {
+                  mContentView.removeView(balloon);
+              } else {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+              }
+          }
+      } else {
+          if (levelNumber <= 10) {
+              if (currentColor == BalloonColors[0]) {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+                  mContentView.removeView(balloon);
+              }else {
+                  mContentView.removeView(balloon);
+              }
+          }else if (levelNumber > 10 && levelNumber <= 20 ){
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1]) {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+                  mContentView.removeView(balloon);
+              }else {
+                  mContentView.removeView(balloon);
+              }
+          }else if (levelNumber > 20 && levelNumber <= 30 ){
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2]) {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+                  mContentView.removeView(balloon);
+              }else {
+                  mContentView.removeView(balloon);
+              }
+          }else if (levelNumber > 30 && levelNumber <= 40 ){
+                  if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2] || currentColor == BalloonColors[3]) {
+                      Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                      gameOver.show();
+                      mContentView.removeView(balloon);
+                  }else {
+                      mContentView.removeView(balloon);
+                  }
+          }else if (levelNumber > 40 && levelNumber <= 50 ){
+              if (currentColor == BalloonColors[0] || currentColor == BalloonColors[1] || currentColor == BalloonColors[2] || currentColor == BalloonColors[3] || currentColor == BalloonColors[4]) {
+                  Toast gameOver = Toast.makeText(getApplicationContext(), "The game is over", 10);
+                  gameOver.show();
+                  mContentView.removeView(balloon);
+              }else {
+                  mContentView.removeView(balloon);
+              }
+          }
+      }
     }
 
     private void updateDisplay() {
@@ -147,14 +271,14 @@ public class PlayGame extends AppCompatActivity
                 throw new AssertionError(
                         "Expected 1 param for current level");
             }
-
+            //game logic
             int level = params[0];
-            int maxDelay = Math.max(min_delay,
-                    (max_delay - ((level - 1) * 500)));
+            int maxDelay = Math.max(GlobalElements.ConfigData.MIN_DELAY,
+                    (GlobalElements.ConfigData.MAX_DELAY - ((level - 1) * 500)));
             int minDelay = maxDelay / 2;
 
             int balloonsLaunched = 0;
-            while (balloonsLaunched < 3) {
+            while (balloonsLaunched < 5) {
 
 //              Get a random horizontal position for the next balloon
                 Random random = new Random(new Date().getTime());
@@ -185,7 +309,7 @@ public class PlayGame extends AppCompatActivity
     }
 
     private void launchBalloon(int x) {
-
+        //adding colors to the balloon
         Balloon balloon = new Balloon(this, BalloonColors[NextColor], 150);
 
         if (NextColor + 1 == BalloonColors.length) {
@@ -199,11 +323,26 @@ public class PlayGame extends AppCompatActivity
         balloon.setY(screenHeight + balloon.getHeight());
         mContentView.addView(balloon);
 
-//      Let 'er fly
-        int duration = Math.max(min_duration, max_duration- (levelNumber * 1000));
+//     Balloon animation begins
+        if (levelNumber > 10 && levelNumber <= 20){
+            levelBalloonSpeed = levelNumber - 10;
+        } else if (levelNumber > 20 && levelNumber <=30){
+            levelBalloonSpeed = levelNumber - 20;
+        } else if (levelNumber > 30 && levelNumber <=40){
+            levelBalloonSpeed = levelNumber - 30;
+        } else if (levelNumber > 40 && levelNumber <=50){
+            levelBalloonSpeed = levelNumber - 40;
+        }
+
+        int duration = Math.max(min_duration, max_duration- (levelBalloonSpeed * 1000));
         balloon.releaseBalloon(screenHeight, duration);
 
     }
-
+    private void placeReactangle(int height, int width,int color){
+        Rectangle rectangle = new Rectangle(this, BalloonColors[color],200,100);
+        rectangle.setX(width);
+        rectangle.setY(height);
+        mContentView.addView(rectangle);
+    }
 
 }
