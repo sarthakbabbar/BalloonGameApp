@@ -31,7 +31,7 @@ public class StartPage extends AppCompatActivity {
         // Writing data to SharedPreferences
         SharedPreferences settings = getSharedPreferences("MyStorage", MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("gameLevel", "1");
+        editor.putString("gameLevel", "0");
         editor.commit();
 
         //Sending the intent
