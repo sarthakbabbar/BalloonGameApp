@@ -28,6 +28,7 @@ public class PlayGame extends AppCompatActivity
     private int levelBalloonSpeed;
     TextView levelDisplay;
     public int poppedBalloons;
+    private boolean endgame = false;
 
     public static final int min_delay = 500;
     public static final int max_delay = 1500;
@@ -122,6 +123,7 @@ public class PlayGame extends AppCompatActivity
         String message = button.getText().toString();
         intent.putExtra("EXTRA_MESSAGE", message);
         startActivity(intent);
+        endgame = true;
     }
     //on touch event for the button next
 
@@ -296,10 +298,11 @@ public class PlayGame extends AppCompatActivity
       }
       poppedBalloons++;
       //Move to next Level when all Balloons are popped
-        if (poppedBalloons == MAX_BALLOONS_LEVEL)
-        {
-            Next();
-    }
+        if (!endgame) {
+            if (poppedBalloons == MAX_BALLOONS_LEVEL) {
+                Next();
+            }
+        }
 
 
 }
