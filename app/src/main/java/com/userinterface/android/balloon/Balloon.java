@@ -88,42 +88,12 @@ public class Balloon extends ImageView implements ValueAnimator.AnimatorUpdateLi
     {
         if (!popped && event.getAction() == MotionEvent.ACTION_DOWN){
             touchListner.popBalloonn(this,true, intrensicBalloonColor);
-            int testColor = Color.argb(255,255,0,0);
-            if (intrensicBalloonColor == Color.argb(255,255,0,0) )
-            {
+
                 popped = true;
                 balloonAnimator.cancel();
                 boolean returnValue = super.onTouchEvent(event);
                 return returnValue;
-            }
 
-
-            /* if (PlayGame.levelNumber <= 10 && currentColor == Color.argb(255,255,0,0) ){
-                popped = true;
-                balloonAnimator.cancel();
-            } else if (PlayGame.levelNumber > 10 && PlayGame.levelNumber <= 20 && (currentColor == Color.argb(255,255,0,0) || currentColor == Color.argb(255,0,255,0))){
-                popped = true;
-                balloonAnimator.cancel();
-
-            }else if (PlayGame.levelNumber > 20 && PlayGame.levelNumber <= 30 && (currentColor == Color.argb(255,255,0,0) || currentColor == Color.argb(255,0,255,0) || currentColor == Color.argb(255,0,0,255))){
-                popped = true;
-                balloonAnimator.cancel();
-
-            }else if (PlayGame.levelNumber > 30 && PlayGame.levelNumber <= 40 && (currentColor == Color.argb(255,255,0,0) || currentColor == Color.argb(255,0,255,0) || currentColor == Color.argb(255,0,0,255) || currentColor == Color.argb(255,130,125,0))){
-                popped = true;
-                balloonAnimator.cancel();
-
-            } else if (PlayGame.levelNumber > 40 && PlayGame.levelNumber <= 50 ) {
-                popped = true;
-                balloonAnimator.cancel();
-            } else if (PlayGame.levelNumber > 50){
-                popped = true;
-                balloonAnimator.cancel();
-            } else  {
-                return false;
-                //put a dialog to end the game (how to return to the start page from here ?)
-                //
-            }*/
         }
         return !super.onTouchEvent(event);
     }

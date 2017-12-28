@@ -20,11 +20,10 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Level"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:textSize="30dp"
-            />
+            android:text="Level"
+            android:textSize="30dp" />
         <TextView
             android:id="@+id/textLevelNumber"
             android:layout_height="wrap_content"
@@ -47,14 +46,14 @@
             android:onClick="End"
             android:text="End Game"
              />
+
         <Button
             android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             android:onClick="Next"
-            android:text="Next Level"
-            />
+            android:text="Next Level" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
